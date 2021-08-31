@@ -31,26 +31,26 @@ namespace HealthChecker.GraphQL
             //    resolve: context => "OFFLINE"
             //);
 
-            FieldAsync<StringGraphType>(
+            Field<StringGraphType>(
                 "status",
                 // TODO: replace with health check code
-                resolve: async context => {
-                    var temp = await healthCheckerHelperService.CheckServerStatus(context.Source.HealthCheckUri);
-                    return temp.Status;
+                resolve: context => {
+                    var temp = healthCheckerHelperService.GetCachedServerStatus(context.Source.HealthCheckUri);
+                    return temp?.Status;
                 }
             );
-            FieldAsync<StringGraphType>(
+            Field<StringGraphType>(
                 "error",
-                resolve: async context => {
-                    var temp = await healthCheckerHelperService.CheckServerStatus(context.Source.HealthCheckUri);
-                    return temp.Error;
+                resolve: context => {
+                    var temp = healthCheckerHelperService.GetCachedServerStatus(context.Source.HealthCheckUri);
+                    return temp?.Error;
                 }
             );
-            FieldAsync<StringGraphType>(
+            Field<StringGraphType>(
                 "lastTimeUp",
-                resolve: async context => {
-                    var temp = await healthCheckerHelperService.CheckServerStatus(context.Source.HealthCheckUri);
-                    return temp.LastTimeUp;
+                resolve: context => {
+                    var temp = healthCheckerHelperService.GetCachedServerStatus(context.Source.HealthCheckUri);
+                    return temp?.LastTimeUp;
                 }
             );
         }
@@ -76,12 +76,15 @@ namespace HealthChecker.GraphQL
             },
         };
 
-        public HealthCheckerQuery()
+        public HealthCheckerQuery(IHealthCheckerHelperService healthCheckerHelperService)
         {
             Name = "Query";
 
 
             Func<ResolveFieldContext, string, object> serverResolver = (context, id) => this.servers;
+
+            //Starts async checking of server statuses
+            healthCheckerHelperService.StartContinuousCheckingServers(this.servers.ConvertAll(server => server.HealthCheckUri), 10);
 
             FieldDelegate<ListGraphType<ServerType>>(
                 "servers",
@@ -100,9 +103,9 @@ namespace HealthChecker.GraphQL
 
     public class HealthCheckerSchema : Schema
     {
-        public HealthCheckerSchema(IServiceProvider provider) : base(provider)
+        public HealthCheckerSchema(IServiceProvider provider, IHealthCheckerHelperService healthCheckerHelperService) : base(provider)
         {
-            Query = new HealthCheckerQuery();
+            Query = new HealthCheckerQuery(healthCheckerHelperService);
         }
     }
 }

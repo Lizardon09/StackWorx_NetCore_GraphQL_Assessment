@@ -10,7 +10,7 @@ namespace HealthCheckerHelper.Infrastructure.Extentions
 {
     public static class HealthCheckerHelperExtensions
     {
-        public static void ConfigureHealthCheckerHelper(this IServiceCollection services, IConfiguration config)
+        public static void ConfigureHealthCheckerHelper(this IServiceCollection services)
         {
             if (!services.Any(x => x.ServiceType == typeof(IServerHelperService)))
             {

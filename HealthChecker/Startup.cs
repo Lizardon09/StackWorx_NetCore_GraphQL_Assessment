@@ -45,14 +45,12 @@ namespace HealthChecker
                 //options.UnhandledExceptionDelegate = ctx => logger.LogError("{Error} occured", ctx.OriginalException.Message);
             }).AddSystemTextJson(deserializerSettings => { }, serializerSettings => { });
 
-            //Configure custom SeverHelper Library for handling server related tasks.
-            services.ConfigureServerHelper();
-
             //Configure custom HealthCheckerHelper Library for handling data managment related to main application
-            services.ConfigureHealthCheckerHelper(Configuration);
+            services.ConfigureHealthCheckerHelper();
 
             //Add memory cache for HealthCheckerHelper service
             services.AddMemoryCache();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

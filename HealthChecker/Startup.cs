@@ -51,6 +51,9 @@ namespace HealthChecker
             //Add memory cache for HealthCheckerHelper service
             services.AddMemoryCache();
 
+            //Add the graphtype for server error
+            services.AddSingleton<ServerErrorType>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

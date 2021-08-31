@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using GraphQL;
 using GraphQL.Types;
+using HealthCheckerHelper.Infrastructure.Models;
 using HealthCheckerHelper.Infrastructure.Services.Interfaces;
 
 namespace HealthChecker.GraphQL
@@ -12,6 +12,15 @@ namespace HealthChecker.GraphQL
         public string Id { get; set; }
         public string Name { get; set; }
         public string HealthCheckUri { get; set; }
+    }
+
+    public class ServerErrorType : ObjectGraphType<ServerError>
+    {
+        public ServerErrorType()
+        {
+            Field(se => se.Status, type: typeof(StringGraphType));
+            Field(se => se.Body);
+        }
     }
 
     public class ServerType : ObjectGraphType<Server>
@@ -39,7 +48,7 @@ namespace HealthChecker.GraphQL
                     return temp?.Status;
                 }
             );
-            Field<StringGraphType>(
+            Field<ServerErrorType>(
                 "error",
                 resolve: context => {
                     var temp = healthCheckerHelperService.GetCachedServerStatus(context.Source.HealthCheckUri);

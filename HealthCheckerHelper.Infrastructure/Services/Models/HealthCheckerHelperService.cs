@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TaskHelper.Infrastructure.Models;
+using static HealthCheckerHelper.Infrastructure.Models.HealthCheckerEnums;
 
 namespace HealthCheckerHelper.Infrastructure.Services.Models
 {
@@ -15,16 +16,11 @@ namespace HealthCheckerHelper.Infrastructure.Services.Models
     {
         private IServerHelperService _serverHelperService;
         private IMemoryCache _memoryCache;
-        private MemoryCacheEntryOptions _memoryCacheOptions;
 
         public HealthCheckerHelperService(IServerHelperService serverHelperService, IMemoryCache memoryCache)
         {
             _serverHelperService = serverHelperService;
-            _memoryCache = memoryCache;
-            // Set cache options.
-            _memoryCacheOptions = new MemoryCacheEntryOptions()
-                // Set cache expiration for any entry
-                .SetSlidingExpiration(TimeSpan.FromSeconds(5));
+            _memoryCache = memoryCache;                     //We intentiionally do not have cache options for entrye expiry times because we want cache to persist
         }
 
         public async Task<ServerHealth> CheckServerStatus(string server)
@@ -43,7 +39,7 @@ namespace HealthCheckerHelper.Infrastructure.Services.Models
                 var severhealth = new ServerHealth()
                 {
                     Name = server,
-                    Status = "UNKNOWN (Application Error)",
+                    Status = ServerStatus.UNKNOWN,
                     Error = new ServerError()
                     {
                         Status = 000,
@@ -53,6 +49,11 @@ namespace HealthCheckerHelper.Infrastructure.Services.Models
                 };
                 return severhealth;
             }
+        }
+
+        public void FlushCache()
+        {
+            _memoryCache.Dispose();
         }
 
         public ServerHealth GetCachedServerStatus(string server)
@@ -72,7 +73,7 @@ namespace HealthCheckerHelper.Infrastructure.Services.Models
                 severhealth = new ServerHealth()
                 {
                     Name = server,
-                    Status = "ONLINE",
+                    Status = ServerStatus.ONLINE,
                     Error = null,
                     LastTimeUp = DateTime.Now
                 };
@@ -82,7 +83,7 @@ namespace HealthCheckerHelper.Infrastructure.Services.Models
                 severhealth = new ServerHealth()
                 {
                     Name = server,
-                    Status = "DOWN",
+                    Status = ServerStatus.DOWN,
                     Error = new ServerError()
                     {
                         Status = response.StatusCode,

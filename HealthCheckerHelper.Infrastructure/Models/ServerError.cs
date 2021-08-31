@@ -7,7 +7,7 @@ namespace HealthCheckerHelper.Infrastructure.Models
 {
     public class ServerError
     {
-        public HttpStatusCode Status { get; set; }
+        public HttpStatusCode? Status { get; set; }
         public string Body { get; set; }
     }
 }

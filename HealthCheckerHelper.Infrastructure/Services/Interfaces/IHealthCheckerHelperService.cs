@@ -11,7 +11,6 @@ namespace HealthCheckerHelper.Infrastructure.Services.Interfaces
         void StopCheckingServer(string server);
         void StartCheckingServer(string server, int seconds);
         void StartContinuousCheckingServers(List<string> serverurls, int seconds);
-
-        // static void RecurringTask(Task task, int seconds, CancellationToken token);
+        void FlushCache();
     }
 }

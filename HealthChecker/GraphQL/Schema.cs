@@ -91,19 +91,38 @@ namespace HealthChecker.GraphQL
         {
             Name = "Query";
 
-
-            Func<ResolveFieldContext, string, object> serverResolver = (context, id) => this.servers;
-
             //Gets intervale for server status checking from app settings
             var seconds = config.GetValue<int>("ServerStatusCheckIntervalSeconds");
 
             //Starts async checking of server statuses
             healthCheckerHelperService.StartContinuousCheckingServers(this.servers.ConvertAll(server => server.HealthCheckUri), seconds);
 
+
+            Func<ResolveFieldContext, string, object, object> serverResolver = (context, id, name) => {
+                if (id!=null) return this.servers.FindAll(s => s.Id.Equals(id));
+                if (name!=null) return this.servers.FindAll(s => s.Name.Equals(name));
+                return this.servers;
+            };
+
+            Func<ResolveFieldContext, string, object> stopCheckingServerResolver = (context, servername) => {
+
+                var server = this.servers.Find(s => s.Name.Equals(servername));
+                if (server != null) healthCheckerHelperService.StopCheckingServer(server.HealthCheckUri);
+                return this.servers;
+            };
+
+            Func<ResolveFieldContext, string, object> startCheckingServerResolver = (context, servername) => {
+
+                var server = this.servers.Find(s => s.Name.Equals(servername));
+                if (server != null) healthCheckerHelperService.StartCheckingServer(server.HealthCheckUri, seconds);
+                return this.servers;
+            };
+
             FieldDelegate<ListGraphType<ServerType>>(
                 "servers",
                 arguments: new QueryArguments(
-                    new QueryArgument<StringGraphType> { Name = "id", Description = "id of server" }
+                    new QueryArgument<StringGraphType> { Name = "id", Description = "id of server" },
+                    new QueryArgument<StringGraphType> { Name = "name" }
                 ),
                 resolve: serverResolver
             );
@@ -112,6 +131,23 @@ namespace HealthChecker.GraphQL
                 "hello",
                 resolve: context => "world"
             );
+
+            FieldDelegate<ListGraphType<ServerType>>(
+                "stopCheckingServer",
+                arguments: new QueryArguments(
+                    new QueryArgument<StringGraphType> { Name = "servername" }
+                ),
+                resolve: stopCheckingServerResolver
+            );
+
+            FieldDelegate<ListGraphType<ServerType>>(
+                "startCheckingServer",
+                arguments: new QueryArguments(
+                    new QueryArgument<StringGraphType> { Name = "servername" }
+                ),
+                resolve: startCheckingServerResolver
+            );
+
         }
     }
 

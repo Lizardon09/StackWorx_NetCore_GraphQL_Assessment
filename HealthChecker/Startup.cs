@@ -14,8 +14,10 @@ using GraphQL.Server.Transports.AspNetCore.Common;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using SeverHelper.Infrastructure.Extentions;
 using HealthCheckerHelper.Infrastructure.Extentions;
+using NLog;
+using System.IO;
+using LoggerHelper.Infrastructure.Extensions;
 
 namespace HealthChecker
 {
@@ -23,6 +25,7 @@ namespace HealthChecker
     {
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -54,6 +57,8 @@ namespace HealthChecker
             //Add the graphtype for server error
             services.AddSingleton<ServerErrorType>();
 
+            //Add Logger service
+            services.ConfigureLoggerService();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,7 +98,7 @@ namespace HealthChecker
     public class GraphQLHttpMiddlewareWithLogs<TSchema> : GraphQLHttpMiddleware<TSchema>
         where TSchema : ISchema
     {
-        private readonly ILogger _logger;
+        private readonly Microsoft.Extensions.Logging.ILogger _logger;
 
         public GraphQLHttpMiddlewareWithLogs(
             ILogger<GraphQLHttpMiddleware<TSchema>> logger,

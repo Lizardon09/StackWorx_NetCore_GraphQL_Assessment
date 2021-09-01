@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TaskHelper", "TaskHelper", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskHelper.Infrastructure", "TaskHelper.Infrastructure\TaskHelper.Infrastructure.csproj", "{E16637C3-986A-4D1F-BC2C-7C4543057F0B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoggerHelper", "LoggerHelper", "{8DBF168D-6826-4415-9788-810925473873}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerHelper.Infrastructure", "LoggerHelper.Infrastructure\LoggerHelper.Infrastructure.csproj", "{F289F1B9-2522-4709-8AE0-82C5D006CE60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +42,10 @@ Global
 		{E16637C3-986A-4D1F-BC2C-7C4543057F0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E16637C3-986A-4D1F-BC2C-7C4543057F0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E16637C3-986A-4D1F-BC2C-7C4543057F0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F289F1B9-2522-4709-8AE0-82C5D006CE60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F289F1B9-2522-4709-8AE0-82C5D006CE60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F289F1B9-2522-4709-8AE0-82C5D006CE60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F289F1B9-2522-4709-8AE0-82C5D006CE60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +54,7 @@ Global
 		{DA7F103E-CC2B-49C0-B061-CD92305E7D1A} = {9A900FEA-61F8-49E2-B854-890E6A6D9C13}
 		{EC4CDF96-4B50-4A86-AD88-54CFE58B4B05} = {8FD9B9A5-BE57-4811-8DC9-76CF70D3CA8D}
 		{E16637C3-986A-4D1F-BC2C-7C4543057F0B} = {7F5F16EA-C48F-42EE-8399-0E28DBED636B}
+		{F289F1B9-2522-4709-8AE0-82C5D006CE60} = {8DBF168D-6826-4415-9788-810925473873}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {781E314D-BED0-45C5-9EB1-4F138925503C}

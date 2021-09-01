@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LoggerHelper.Infrastructure\LoggerHelper.Infrastructure.csproj" />
     <ProjectReference Include="..\SeverHelper.Infrastructure\SeverHelper.Infrastructure.csproj" />
     <ProjectReference Include="..\TaskHelper.Infrastructure\TaskHelper.Infrastructure.csproj" />
   </ItemGroup>

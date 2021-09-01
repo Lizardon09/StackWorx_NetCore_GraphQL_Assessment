@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HealthCheckerHelper.Infrastructure\HealthCheckerHelper.Infrastructure.csproj" />
+    <ProjectReference Include="..\LoggerHelper.Infrastructure\LoggerHelper.Infrastructure.csproj" />
     <ProjectReference Include="..\SeverHelper.Infrastructure\SeverHelper.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using GraphQL.Types;
 using HealthCheckerHelper.Infrastructure.Models;
 using HealthCheckerHelper.Infrastructure.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace HealthChecker.GraphQL
 {
@@ -85,15 +87,18 @@ namespace HealthChecker.GraphQL
             },
         };
 
-        public HealthCheckerQuery(IHealthCheckerHelperService healthCheckerHelperService)
+        public HealthCheckerQuery(IHealthCheckerHelperService healthCheckerHelperService, IConfiguration config)
         {
             Name = "Query";
 
 
             Func<ResolveFieldContext, string, object> serverResolver = (context, id) => this.servers;
 
+            //Gets intervale for server status checking from app settings
+            var seconds = config.GetValue<int>("ServerStatusCheckIntervalSeconds");
+
             //Starts async checking of server statuses
-            healthCheckerHelperService.StartContinuousCheckingServers(this.servers.ConvertAll(server => server.HealthCheckUri), 10);
+            healthCheckerHelperService.StartContinuousCheckingServers(this.servers.ConvertAll(server => server.HealthCheckUri), seconds);
 
             FieldDelegate<ListGraphType<ServerType>>(
                 "servers",
@@ -112,9 +117,9 @@ namespace HealthChecker.GraphQL
 
     public class HealthCheckerSchema : Schema
     {
-        public HealthCheckerSchema(IServiceProvider provider, IHealthCheckerHelperService healthCheckerHelperService) : base(provider)
+        public HealthCheckerSchema(IServiceProvider provider, IHealthCheckerHelperService healthCheckerHelperService, IConfiguration config) : base(provider)
         {
-            Query = new HealthCheckerQuery(healthCheckerHelperService);
+            Query = new HealthCheckerQuery(healthCheckerHelperService, config);
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LoggerHelper.Infrastructure.Models.Interfaces
+﻿namespace LoggerHelper.Infrastructure.Models.Interfaces
 {
     public interface ILoggerManager
     {

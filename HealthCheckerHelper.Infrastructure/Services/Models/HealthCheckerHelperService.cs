@@ -5,7 +5,6 @@ using Microsoft.Extensions.Caching.Memory;
 using SeverHelper.Infrastructure.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TaskHelper.Infrastructure.Models;
@@ -23,7 +22,7 @@ namespace HealthCheckerHelper.Infrastructure.Services.Models
         {
             _serverHelperService = serverHelperService;
             _memoryCache = memoryCache;                     //We intentiionally do not have cache options for entrye expiry times because we want cache to persist
-            _logger = logger;
+            _logger = logger;                               //All sever healths proccessed, as well as their checks being stopped or start are logged
         }
 
         public async Task<ServerHealth> CheckServerStatus(string server)

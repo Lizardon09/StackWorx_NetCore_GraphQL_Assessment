@@ -17,7 +17,6 @@ using System;
 using HealthCheckerHelper.Infrastructure.Extentions;
 using NLog;
 using System.IO;
-using LoggerHelper.Infrastructure.Extensions;
 
 namespace HealthChecker
 {
@@ -25,6 +24,7 @@ namespace HealthChecker
     {
         public Startup(IConfiguration configuration)
         {
+            //Add Log configuration for NLog helper library
             LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
@@ -48,17 +48,19 @@ namespace HealthChecker
                 //options.UnhandledExceptionDelegate = ctx => logger.LogError("{Error} occured", ctx.OriginalException.Message);
             }).AddSystemTextJson(deserializerSettings => { }, serializerSettings => { });
 
-            //Configure custom HealthCheckerHelper Library for handling data managment related to main application
-            services.ConfigureHealthCheckerHelper();
-
             //Add memory cache for HealthCheckerHelper service
             services.AddMemoryCache();
 
             //Add the graphtype for server error
             services.AddSingleton<ServerErrorType>();
 
-            //Add Logger service
-            services.ConfigureLoggerService();
+            /*
+             * Configure custom HealthCheckerHelper Library for handling data managment related to main application
+             * Since each of the helper libraries also consider injecting their depencies off other used libraries,
+             * we do not need to configure ALL of them on satrtup here as the HealthCheckerHelper utilizes all
+            */
+            services.ConfigureHealthCheckerHelper();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Net;
 using GraphQL.Types;
 using HealthCheckerHelper.Infrastructure.Models;
@@ -49,6 +48,11 @@ namespace HealthChecker.GraphQL
             //    // TODO: replace with health check code
             //    resolve: context => "OFFLINE"
             //);
+
+            /*
+             * All three fields will pull from the cache of the helper service where it is consitently
+             * checking the servers it needs to
+             */
 
             Field<StringGraphType>(
                 "status",
@@ -105,13 +109,14 @@ namespace HealthChecker.GraphQL
             //Starts async checking of server statuses
             healthCheckerHelperService.StartContinuousCheckingServers(this.servers.ConvertAll(server => server.HealthCheckUri), seconds);
 
-
+            //Resolver for getting current servers (With filters)
             Func<ResolveFieldContext, string, object, object> serverResolver = (context, id, name) => {
                 if (id!=null) return this.servers.FindAll(s => s.Id.Equals(id));
                 if (name!=null) return this.servers.FindAll(s => s.Name.Equals(name));
                 return this.servers;
             };
 
+            //Resolver for mutation to stop checking server
             Func<ResolveFieldContext, string, object> stopCheckingServerResolver = (context, servername) => {
 
                 var server = this.servers.Find(s => s.Name.Equals(servername));
@@ -119,13 +124,14 @@ namespace HealthChecker.GraphQL
                 return this.servers;
             };
 
+            //Resolver for mutation to start checking server
             Func<ResolveFieldContext, string, object> startCheckingServerResolver = (context, servername) => {
-
                 var server = this.servers.Find(s => s.Name.Equals(servername));
                 if (server != null) healthCheckerHelperService.StartCheckingServer(server.HealthCheckUri, seconds);
                 return this.servers;
             };
 
+            //Added server name filter
             FieldDelegate<ListGraphType<ServerType>>(
                 "servers",
                 arguments: new QueryArguments(
@@ -135,11 +141,7 @@ namespace HealthChecker.GraphQL
                 resolve: serverResolver
             );
 
-            Field<StringGraphType>(
-                "hello",
-                resolve: context => "world"
-            );
-
+            //Mutation to stop the checking of a sever
             FieldDelegate<ListGraphType<ServerType>>(
                 "stopCheckingServer",
                 arguments: new QueryArguments(
@@ -148,12 +150,18 @@ namespace HealthChecker.GraphQL
                 resolve: stopCheckingServerResolver
             );
 
+            //Mutation to start the checking of a sever (from the server list)
             FieldDelegate<ListGraphType<ServerType>>(
                 "startCheckingServer",
                 arguments: new QueryArguments(
                     new QueryArgument<StringGraphType> { Name = "servername" }
                 ),
                 resolve: startCheckingServerResolver
+            );
+
+            Field<StringGraphType>(
+                "hello",
+                resolve: context => "world"
             );
 
         }

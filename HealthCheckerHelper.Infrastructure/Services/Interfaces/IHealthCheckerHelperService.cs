@@ -12,5 +12,6 @@ namespace HealthCheckerHelper.Infrastructure.Services.Interfaces
         void StartCheckingServer(string server, int seconds);
         void StartContinuousCheckingServers(List<string> serverurls, int seconds);
         void FlushCache();
+        void LogServerHealth(ServerHealth serverhealth);
     }
 }

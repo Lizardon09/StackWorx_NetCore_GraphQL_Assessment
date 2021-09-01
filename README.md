@@ -2,6 +2,8 @@
 
 ## Getting Started
 
+Assignment from https://stackworx.github.io/technical-assignments/docs/dotnet/brief
+
 Once you have started the server via Visual Studio you can access the graphql query window with [https://localhost:5001/ui/playground](https://localhost:5001/ui/playground)
 
 Alternatively you can start it via the command line

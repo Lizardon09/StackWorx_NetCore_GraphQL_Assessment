@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
 using GraphQL.Types;
 using HealthCheckerHelper.Infrastructure.Models;
 using HealthCheckerHelper.Infrastructure.Services.Interfaces;
@@ -20,7 +21,14 @@ namespace HealthChecker.GraphQL
     {
         public ServerErrorType()
         {
-            Field(se => se.Status, type: typeof(StringGraphType));
+            Field<IntGraphType>(
+                "status",
+                resolve : context =>
+                {
+                    var temp = (int)(HttpStatusCode)context.Source.Status;
+                    return temp;
+                }
+            );
             Field(se => se.Body);
         }
     }
